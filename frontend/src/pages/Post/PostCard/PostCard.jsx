@@ -12,7 +12,6 @@ const PostCard = ({
   isEditing,
   onCancelEdit,
   onSubmitEdit,
-  token,
 }) => {
   const [isLiked, setIsLiked] = useState(post.isLiked);
   const [likesCount, setLikesCount] = useState(post.likeCount);
@@ -54,7 +53,7 @@ const PostCard = ({
   const fetchComments = async () => {
     try {
       setLoadingComments(true);
-      const res = await postService.getComment(post.id);
+      const res = await postService.getComments(post.id);
       setComments(res.comments || []);
       setCommentCount(res.comments?.length || 0);
     } catch (error) {
@@ -67,9 +66,9 @@ const PostCard = ({
   const handleComment = async () => {
     if (!commentText.trim()) return;
     try {
-      await postService.createComment(post.id, token, { body: commentText });
+      await postService.createComment(post.id, { body: commentText });
       setCommentText("");
-      const updated = await postService.getComment(post.id);
+      const updated = await postService.getComments(post.id);
       setComments(updated.comments || []);
       setCommentCount(updated.comments?.length || 0);
     } catch (error) {
@@ -81,11 +80,12 @@ const PostCard = ({
     if (!window.confirm("Are you sure you want to delete this comment?"))
       return;
     try {
-      await postService.deleteComment(token, post.id, commentId);
+      await postService.deleteComment(post.id, commentId);
       const updated = comments.filter((c) => c.id !== commentId);
       setComments(updated);
       setCommentCount(updated.length);
     } catch (error) {
+      alert(error);
       console.error("Error deleting comment:", error);
     }
   };
@@ -108,12 +108,8 @@ const PostCard = ({
     const prevIsLiked = isLiked;
     const prevLikesCount = likesCount;
 
-    const newIsLiked = !isLiked;
-    setIsLiked(newIsLiked);
-    setLikesCount((count) => count + (newIsLiked ? 1 : -1));
-
     try {
-      const res = await postService.liked(post.id, token);
+      const res = await postService.likePost(post.id);
       if (typeof res?.updatedPost?.likeCount === "number") {
         setLikesCount(res.updatedPost.likeCount);
       }
