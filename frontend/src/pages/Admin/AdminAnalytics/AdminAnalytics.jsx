@@ -16,6 +16,22 @@ const AdminAnalytics = () => {
   const [itineraryDistribution, setItineraryDistribution] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const handlePostClick = (data) => {
+  if (data && data.itineraryId) {
+    navigate(`/admin/itineraries/${data.itineraryId}`);
+  } else {
+    console.log('Không tìm thấy itinerary chứa bài post này.');
+  }
+};
+
+  const handleItineraryClick = (data) => {
+  if (data && data.id) {
+    navigate(`/admin/itineraries/${data.id}`);
+  } else {
+    console.log('Không tìm thấy itinerary này.');
+  }
+};
+
   useEffect(() => {
     const fetchAnalyticsData = async () => {
       try {
@@ -77,7 +93,7 @@ const LoadingHeart = () => (
             <TrendingUp size={20} className={styles.chartIcon} />
             <h2 className={styles.chartTitle}>Monthly Platform Growth</h2>
           </div>
-          <ResponsiveContainer width="100%" height={300}>
+          <ResponsiveContainer width="100%" height={400}>
             <LineChart data={growthData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#fce4ec" />
               <XAxis dataKey="month" stroke="#e91e63" />
@@ -97,13 +113,13 @@ const LoadingHeart = () => (
             <Star size={20} className={styles.chartIcon} />
             <h2 className={styles.chartTitle}>Top Itineraries by Ratings</h2>
           </div>
-          <ResponsiveContainer width="100%" height={300}>
+          <ResponsiveContainer width="100%" height={400}>
             <BarChart data={topItineraries} layout="vertical" margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#fce4ec" />
               <XAxis type="number" stroke="#e91e63" />
-              <YAxis type="category" dataKey="title" stroke="#e91e63" />
+              <YAxis type="category" dataKey="title" stroke="#e91e63" width={120} />
               <Tooltip contentStyle={{ backgroundColor: 'rgba(255, 255, 255, 0.8)', border: 'none', borderRadius: '8px' }} />
-              <Bar dataKey="ratingCount" name="Ratings" fill="#ff80ab" barSize={20} radius={[10, 10, 0, 0]} />
+              <Bar dataKey="averageRating" name="Ratings" fill="#ff80ab" barSize={20} radius={[10, 10, 0, 0]} cursor="pointer" onClick={handleItineraryClick} />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -114,13 +130,13 @@ const LoadingHeart = () => (
             <Heart size={20} className={styles.chartIcon} />
             <h2 className={styles.chartTitle}>Top Posts by Likes</h2>
           </div>
-          <ResponsiveContainer width="100%" height={300}>
+          <ResponsiveContainer width="100%" height={400}>
             <BarChart data={topPosts} layout="vertical" margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#fce4ec" />
               <XAxis type="number" stroke="#e91e63" />
-              <YAxis type="category" dataKey="content" stroke="#e91e63" />
+              <YAxis type="category" dataKey="content" stroke="#e91e63" width={120} />
               <Tooltip contentStyle={{ backgroundColor: 'rgba(255, 255, 255, 0.8)', border: 'none', borderRadius: '8px' }} />
-              <Bar dataKey="likeCount" name="Likes" fill="#f48fb1" barSize={20} radius={[10, 10, 0, 0]} />
+              <Bar dataKey="likeCount" name="Likes" fill="#f48fb1" barSize={20} radius={[10, 10, 0, 0]} cursor="pointer" onClick={handlePostClick}/>
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -131,7 +147,7 @@ const LoadingHeart = () => (
             <MapPin size={20} className={styles.chartIcon} />
             <h2 className={styles.chartTitle}>Itinerary Visibility</h2>
           </div>
-          <ResponsiveContainer width="100%" height={300}>
+          <ResponsiveContainer width="100%" height={400}>
             <PieChart>
               <Pie
                 data={itineraryDistribution}

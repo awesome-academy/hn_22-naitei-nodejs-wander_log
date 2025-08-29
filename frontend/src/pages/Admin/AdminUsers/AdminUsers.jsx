@@ -79,23 +79,31 @@ const AdminUsers = () => {
     }
   };
 
-  const handleDeleteUser = async (userId) => {
-    if (!window.confirm("Bạn có chắc chắn muốn xóa người dùng này? Hành động này không thể hoàn tác.")) {
-      return;
-    }
-    setActioning(userId);
-    try {
-      await deleteUser(userId);
-      const updatedUsers = await fetchUsers(searchTerm);
-      setUsers(updatedUsers);
-      const updatedStats = await fetchDashboardStats();
-      setDashboardStats(updatedStats);
-    } catch (error) {
-      console.error("Failed to delete user", error);
-    } finally {
-      setActioning(null);
-    }
-  };
+const handleDeleteUser = async (userId) => {
+  if (actioning === userId) return;
+
+  const userToDelete = users.find(u => u.id === userId);
+  const userDisplayName = userToDelete?.name || userToDelete?.email;
+
+  if (!window.confirm(`Bạn có chắc chắn muốn xóa người dùng "${userDisplayName}" không? Hành động này không thể hoàn tác.`)) {
+    return;
+  }
+
+  setActioning(userId);
+  try {
+    await deleteUser(userId);
+    setUsers(currentUsers => currentUsers.filter(user => user.id !== userId));
+
+    const updatedStats = await fetchDashboardStats();
+    setDashboardStats(updatedStats);
+    
+  } catch (error) {
+    console.error("Failed to delete user", error);
+    alert("Xảy ra lỗi khi xóa người dùng. Vui lòng thử lại.");
+  } finally {
+    setActioning(null);
+  }
+};
 
 const activeUsersCount = dashboardStats?.activeUsers || 0;
 const inactiveUsersCount = (dashboardStats?.totalUsers || 0) - activeUsersCount;

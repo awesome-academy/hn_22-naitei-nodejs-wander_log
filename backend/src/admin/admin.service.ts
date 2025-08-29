@@ -108,7 +108,9 @@ export class AdminService {
     return user;
   }
 
-  async deleteUser(adminId: string, userId: string) {
+// Trong AdminService.ts
+
+async deleteUser(adminId: string, userId: string) {
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
       select: { id: true, email: true },
@@ -118,21 +120,27 @@ export class AdminService {
       throw new NotFoundException(this.i18n.t('admin.user_not_found'));
     }
 
-    await this.prisma.user.delete({
-      where: { id: userId },
-    });
+    await this.prisma.$transaction(async (prisma) => {
+      await prisma.rating.deleteMany({
+        where: { userId: userId },
+      });
 
-    await this.prisma.adminLog.create({
-      data: {
-        adminId: adminId,
-        action: 'Xóa tài khoản người dùng',
-        targetId: userId,
-        targetType: 'User',
-      },
+      await prisma.user.delete({
+        where: { id: userId },
+      });
+
+      await prisma.adminLog.create({
+        data: {
+          adminId: adminId,
+          action: 'Xóa tài khoản người dùng',
+          targetId: userId,
+          targetType: 'User',
+        },
+      });
     });
 
     return { message: this.i18n.t('admin.user_deleted_successfully') };
-  }
+}
 
   async findAllItineraries(query?: string) {
     const where = query ? {
@@ -272,25 +280,20 @@ async getTopItinerariesByRatings(limit = 5) {
     _count: {
       value: true,
     },
-    orderBy: {
-      _avg: {
-        value: 'desc',
-      },
-    },
-    take: limit,
   });
 
-  const topItineraryIds = averageRatings.map(rating => rating.itineraryId);
+  const itineraryIdsWithRatings = averageRatings.map(rating => rating.itineraryId);
 
-  if (topItineraryIds.length === 0) {
+  if (itineraryIdsWithRatings.length === 0) {
     return [];
   }
 
-  const topItineraries = await this.prisma.itinerary.findMany({
+  const itinerariesWithDetails = await this.prisma.itinerary.findMany({
     where: {
       id: {
-        in: topItineraryIds,
+        in: itineraryIdsWithRatings,
       },
+      visibility: 'PUBLIC',
     },
     select: {
       id: true,
@@ -307,24 +310,27 @@ async getTopItinerariesByRatings(limit = 5) {
     },
   });
 
-  const sortedItineraries = topItineraries.sort((a, b) => {
-    const aRating = averageRatings.find(r => r.itineraryId === a.id);
-    const bRating = averageRatings.find(r => r.itineraryId === b.id);
-    return (bRating?._avg?.value || 0) - (aRating?._avg?.value || 0);
-  });
-  
-  return sortedItineraries.map(itinerary => {
+  const combinedData = itinerariesWithDetails.map(itinerary => {
     const ratingData = averageRatings.find(r => r.itineraryId === itinerary.id);
 
-    const averageRating = ratingData ? ratingData._avg.value : 0;
-    const ratingCount = ratingData ? ratingData._count.value : 0;
+    const averageRating = ratingData?._avg?.value ?? 0;
+    const ratingCount = ratingData?._count?.value ?? 0;
 
     return {
       ...itinerary,
-      averageRating: parseFloat((averageRating || 0).toFixed(1)),
-      ratingCount: ratingCount,
+      averageRating,
+      ratingCount,
     };
   });
+
+  const sortedAndLimited = combinedData
+    .sort((a, b) => b.averageRating - a.averageRating)
+    .slice(0, limit);
+
+  return sortedAndLimited.map(it => ({
+    ...it,
+    averageRating: parseFloat(it.averageRating.toFixed(1)),
+  }));
 }
 
 async getTopPostsByLikes(limit = 5) {
@@ -336,12 +342,18 @@ async getTopPostsByLikes(limit = 5) {
     select: {
       content: true,
       likeCount: true,
+      itinerary: { 
+        select: {
+          id: true, 
+        },
+      },
     },
   });
 
   return topPosts.map(item => ({
     content: item.content ? item.content.substring(0, 20) + '...' : 'Untitled Post',
     likeCount: item.likeCount,
+    itineraryId: item.itinerary?.id, 
   }));
 }
 

@@ -9,6 +9,8 @@ import { useAuth } from "../../../context/AuthContext";
 import Header from "../../../component/Header/Header";
 import usePostActions from "../../../hooks/usePostAction";
 
+import Footer from "../'../../../../component/Footer/Footer";
+
 export default function FeedPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -92,6 +94,7 @@ export default function FeedPage() {
         />
         {renderContent()}
       </div>
+      <Footer/>
     </div>
   );
 }
