@@ -137,18 +137,21 @@ export class NotificationsService {
 
     const follower = await this.prisma.user.findUnique({
       where: { id: followerId },
-      select: { name: true },
+      select: { name: true, id: true },
     });
 
     if (!follower) {
       return null;
     }
 
+    const url = `/profile/${follower.id}`;
+
     const createNotificationDto: CreateNotificationDto = {
       type: NotificationType.NEW_FOLLOW,
       title: 'Người theo dõi mới',
       message: `${follower.name || 'Ai đó'} đã bắt đầu theo dõi bạn`,
       userId: followingId,
+      url,
       fromUserId: followerId,
     };
 
