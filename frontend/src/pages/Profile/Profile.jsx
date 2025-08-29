@@ -13,6 +13,7 @@ import { Calendar, DollarSign } from "lucide-react";
 import moment from "moment";
 import BookmarkList from "../../component/Profile/BookmarkList.jsx";
 import postService from "../../services/post";
+import Footer from "../../component/Footer/Footer.jsx"
 import FollowModal from "../../component/FollowModal/FollowModal.jsx"
 function EditProfileForm({ editForm, setEditForm, onCancel, onSubmit }) {
   return (
@@ -595,6 +596,7 @@ useEffect(() => {
           </div>
         )}
       </div>
+      <Footer/>
       {modalOpen && (
           <FollowModal
             title={modalTitle}

@@ -14,6 +14,7 @@ import moment from "moment";
 import styles from "./ItineraryList.module.css";
 import Header from "../../../component/Header/Header";
 import ItineraryModal from "../../../component/ItineraryModal/ItineraryModal"; 
+import Footer from "../../../component/Footer/Footer";
 
 const ItineraryList = () => {
   const [itineraries, setItineraries] = useState([]);
@@ -204,7 +205,7 @@ const ItineraryList = () => {
           </div>
         )}
       </div>
-
+      <Footer/>  
       <ItineraryModal
         isOpen={isModalOpen}
         onClose={handleCloseModal}

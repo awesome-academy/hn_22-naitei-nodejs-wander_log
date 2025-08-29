@@ -6,6 +6,7 @@ import Header from '../../../component/Header/Header';
 import postService from '../../../services/post';
 import { useAuth } from '../../../context/AuthContext';
 import usePostActions from '../../../hooks/usePostAction';
+import Footer from "../../../component/Footer/Footer";
 
 const PostDetail = () => {
   const { id } = useParams();
@@ -103,6 +104,7 @@ const PostDetail = () => {
           )}
         </div>
       </div>
+      <Footer/>
     </div>
   );
 };

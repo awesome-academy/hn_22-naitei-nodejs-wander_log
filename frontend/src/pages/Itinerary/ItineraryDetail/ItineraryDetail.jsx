@@ -14,6 +14,7 @@ import ActivityFormModal from "../../Activity/ActivityFormModal/ActivityFormModa
 import CreatePost from "../../Post/CreatePost/CreatePost";
 import PostCard from "../../Post/PostCard/PostCard";
 import StarRating from "../../../component/StarRating/StarRating";
+import Footer from "../../../component/Footer/Footer";
 
 import styles from "./ItineraryDetail.module.css";
 import { useNotification } from "../../../hooks/useNotification";
@@ -856,6 +857,7 @@ const ItineraryDetail = () => {
       <div className={styles.progressBar}>
         <div className={styles.progressFill}></div>
       </div>
+      <Footer/>
     </div>
   );
 };

@@ -1,0 +1,189 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+
+/* Kế thừa các biến CSS từ header để nhất quán */
+:root {
+  --primary-color: #3b82f6;
+  --primary-hover: #2563eb;
+  --text-color: #1e293b;
+  --text-secondary: #64748b;
+  --border-color: #e2e8f0;
+  --hover-bg-color: #f8fafc;
+  --bg-glass: rgba(255, 255, 255, 0.95);
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -2px rgba(0, 0, 0, 0.1);
+}
+
+.footer {
+  background: var(--bg-glass);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm); /* Đồng bộ với shadow của header */
+  padding: 2.5rem 0; /* Tăng padding để có không gian */
+  font-family: 'Inter', sans-serif;
+  color: var(--text-color);
+  width: 100%; /* Đảm bảo footer chiếm toàn bộ chiều rộng */
+}
+
+.container {
+  width: 90%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+.topSection {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap; /* Cho phép các phần tử xuống dòng trên màn hình nhỏ */
+  gap: 2rem; /* Khoảng cách giữa các phần tử */
+  padding-bottom: 1.5rem; /* Khoảng cách với đường kẻ chia */
+}
+
+.brandInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* Căn trái thông tin thương hiệu */
+  flex-shrink: 0;
+}
+
+.brandLink {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-decoration: none;
+  margin-bottom: 0.5rem; /* Khoảng cách giữa logo và slogan (nếu có) */
+}
+
+.logo {
+  height: 40px; /* Kích thước logo lớn hơn, đồng bộ với header */
+  object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.brandName {
+  font-size: 1.4rem; /* Kích thước tên thương hiệu lớn hơn */
+  font-weight: 700;
+  color: var(--primary-color);
+  white-space: nowrap; /* Tránh bị ngắt dòng */
+}
+
+.slogan {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  max-width: 300px;
+}
+
+.navLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem; /* Khoảng cách giữa các link */
+  justify-content: flex-end; /* Căn phải các link */
+  align-items: center;
+}
+
+.navItem {
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: color 0.3s ease, transform 0.2s ease;
+  white-space: nowrap; /* Ngăn các link bị ngắt dòng */
+  position: relative;
+  padding: 0.25rem 0; /* Tạo chút không gian click */
+}
+
+.navItem::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: var(--primary-color);
+  transition: width 0.3s ease;
+}
+
+.navItem:hover {
+  color: var(--primary-color);
+  transform: translateY(-1px);
+}
+
+.navItem:hover::after {
+  width: 100%;
+}
+
+.divider {
+  width: 100%;
+  height: 1px;
+  background-color: var(--border-color);
+  margin-bottom: 1.5rem;
+}
+
+.bottomSection {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.copyright {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  text-align: left; /* Căn trái bản quyền */
+  flex-grow: 1; /* Cho phép chiếm không gian còn lại */
+}
+
+.socialIcons {
+  display: flex;
+  gap: 1rem;
+}
+
+.socialLink {
+  color: var(--text-secondary);
+  transition: color 0.3s ease, transform 0.2s ease;
+}
+
+.socialLink:hover {
+  color: var(--primary-color);
+  transform: translateY(-2px);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .topSection {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .brandInfo {
+    align-items: center;
+  }
+
+  .navLinks {
+    justify-content: center;
+    margin-top: 1rem;
+  }
+
+  .bottomSection {
+    flex-direction: column;
+    text-align: center;
+    gap: 0.75rem;
+  }
+
+  .copyright {
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .navLinks {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+}

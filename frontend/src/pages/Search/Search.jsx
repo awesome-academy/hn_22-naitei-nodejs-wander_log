@@ -4,6 +4,7 @@ import Header from "../../component/Header/Header";
 import SearchFilter from "../../component/SearchFilter/SearchFilter";
 import searchService from "../../services/search";
 import styles from "./Search.module.css";
+import Footer from "../../component/Footer/Footer";
 
 export default function Search() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -459,6 +460,7 @@ export default function Search() {
           </div>
         </div>
       </div>
+      <Footer/>
     </div>
   );
 }
